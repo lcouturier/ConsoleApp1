@@ -8,7 +8,7 @@
             var result = 1.Into(x => x + 2).Into(x => x * 3);
             Console.WriteLine(result());
 
-            var o = Optional<int>.Of(5);
+            var o = Optional.Of(5);
             Console.WriteLine(o.HasValue);
         }
     }

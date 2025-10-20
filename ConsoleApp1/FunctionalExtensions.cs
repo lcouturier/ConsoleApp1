@@ -9,7 +9,7 @@ public static class FunctionalExtensions
     return arg2 => func(arg1, arg2);
   }
 
-  
+
 
   public static Func<TResult> Into<T1, TResult>(this T1 value, Func<T1, TResult> func)
   {
@@ -25,7 +25,9 @@ public static class FunctionalExtensions
     where T1 : notnull
   {
     var cache = new ConcurrentDictionary<T1, TResult>();
-        
+
     return arg1 => cache.GetOrAdd(arg1, func);
   }
 }
+
+
