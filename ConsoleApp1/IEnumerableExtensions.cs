@@ -27,11 +27,11 @@ public static class IEnumerableExtensions
 
     public static IEnumerable<(T1, T2?)> LeftJoin<T1, T2, T3>(this IEnumerable<T1> items, IEnumerable<T2> others, Func<T1, T2, bool> predicate)
     {
-       foreach (var item in items)
-       {
+        foreach (var item in items)
+        {
             var matched = others.FirstOrDefault(o => predicate(item, o));
-            yield return (item, matched); 
-       }
+            yield return (item, matched);
+        }
     }
-    
+
 }

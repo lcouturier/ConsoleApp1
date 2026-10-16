@@ -7,30 +7,18 @@ public class Person(string name, string firstName, int age, string? email)
     public int Age { get; } = age;
     public string? Email { get; } = email;
 
-    public override string ToString()
-    {
-        return $"Name: {Name}, FirstName: {FirstName}, Age: {Age}, Email: {Email ?? "N/A"}";
-    }
+    public override string ToString() =>
+        $"Name: {Name}, FirstName: {FirstName}, Age: {Age}, Email: {Email ?? "N/A"}";
 
+    public static implicit operator int(Person person) => person.Age;
 
-    public static implicit operator int(Person data)
-    {
-        return data.Age;
-    }
+    public static implicit operator string(Person person) => $"{person.Name} {person.FirstName}";
 
-    public static implicit operator string(Person data)
+    public string Category() => Age switch
     {
-        return data.Name + " " + data.FirstName;
-    }
-
-    public string Category()
-    {
-        return Age switch
-        {
-            < 13 => "Child",
-            < 20 => "Teenager",
-            < 65 => "Adult",
-            _ => "Senior"
-        };
-    }
+        < 13 => "Child",
+        < 20 => "Teenager",
+        < 65 => "Adult",
+        _ => "Senior"
+    };
 }
