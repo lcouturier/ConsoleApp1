@@ -68,7 +68,7 @@ namespace ConsoleApp1.Tests
             var actual = input.SeparatedBy(sep).ToArray();
             Assert.Equal(expected, actual);
         }
-    
+
 
         [Fact]
         public void LeftJoin_MatchesItemsCorrectly()
@@ -134,6 +134,66 @@ namespace ConsoleApp1.Tests
 
             Assert.Equal((1, null), result[0]);
             Assert.Equal((2, null), result[1]);
+        }
+
+        [Fact]
+        public void LeftJoinBy_UsesComparerAndKeepsFirstMatch()
+        {
+            var left = new[] { "ALPHA", "missing" };
+            var right = new[]
+            {
+                new { Key = "alpha", Value = "first" },
+                new { Key = "ALPHA", Value = "second" }
+            };
+
+            var result = left.LeftJoinBy(
+                right,
+                item => item,
+                item => item.Key).ToList();
+
+            Assert.Equal("first", result[0].Right?.Value);
+            Assert.Null(result[1].Right);
+        }
+
+        [Fact]
+        public void LeftJoinBy_DefersAndRepeatsRightEnumeration()
+        {
+            var rightEnumerations = 0;
+            var joined = new[] { "one" }.LeftJoinBy(
+                GetRightItems(),
+                item => item,
+                item => item);
+
+            Assert.Equal(0, rightEnumerations);
+            Assert.Equal("one", joined.Single().Right);
+            Assert.Equal(1, rightEnumerations);
+            Assert.Equal("one", joined.Single().Right);
+            Assert.Equal(2, rightEnumerations);
+
+            IEnumerable<string> GetRightItems()
+            {
+                rightEnumerations++;
+                yield return "one";
+            }
+        }
+
+        [Fact]
+        public void LeftJoinBy_EmptyLeft_DoesNotEnumerateRight()
+        {
+            var rightEnumerated = false;
+            var joined = Array.Empty<string>().LeftJoinBy(
+                GetRightItems(),
+                item => item,
+                item => item);
+
+            Assert.Empty(joined);
+            Assert.False(rightEnumerated);
+
+            IEnumerable<string> GetRightItems()
+            {
+                rightEnumerated = true;
+                yield return "one";
+            }
         }
     }
 }
